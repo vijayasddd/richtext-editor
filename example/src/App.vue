@@ -1,54 +1,52 @@
 <script lang="ts" setup>
 import "@halo-dev/richtext-editor/dist/style.css";
-import { computed, watchEffect } from "vue";
-import { unified } from "unified";
-import rehypeParse from "rehype-parse";
-import rehypeFormat from "rehype-format";
-import rehypeStringify from "rehype-stringify";
 import { useLocalStorage } from "@vueuse/core";
+import rehypeFormat from "rehype-format";
+import rehypeParse from "rehype-parse";
+import rehypeStringify from "rehype-stringify";
+import { unified } from "unified";
+import { computed, watchEffect } from "vue";
 import {
+  ExtensionAudio,
   ExtensionBlockquote,
   ExtensionBold,
   ExtensionBulletList,
   ExtensionCode,
+  ExtensionColor,
+  ExtensionColumn,
+  ExtensionColumns,
+  ExtensionCommands,
   ExtensionDocument,
+  ExtensionDraggable,
   ExtensionDropcursor,
+  ExtensionFontSize,
   ExtensionGapcursor,
   ExtensionHardBreak,
   ExtensionHeading,
+  ExtensionHighlight,
   ExtensionHistory,
   ExtensionHorizontalRule,
-  ExtensionItalic,
-  ExtensionOrderedList,
-  ExtensionStrike,
-  ExtensionText,
+  ExtensionIframe,
   ExtensionImage,
-  ExtensionTaskList,
+  ExtensionIndent,
+  ExtensionItalic,
   ExtensionLink,
-  ExtensionTextAlign,
-  ExtensionUnderline,
-  ExtensionTable,
+  ExtensionNodeSelected,
+  ExtensionOrderedList,
+  ExtensionPlaceholder,
+  ExtensionStrike,
   ExtensionSubscript,
   ExtensionSuperscript,
-  ExtensionPlaceholder,
-  ExtensionHighlight,
-  ExtensionCommands,
-  ExtensionIframe,
+  ExtensionTable,
+  ExtensionTaskList,
+  ExtensionText,
+  ExtensionTextAlign,
+  ExtensionTrailingNode,
+  ExtensionUnderline,
   ExtensionVideo,
-  ExtensionAudio,
-  ExtensionCodeBlock,
-  ExtensionColor,
-  ExtensionFontSize,
-  lowlight,
   RichTextEditor,
   useEditor,
-  ExtensionIndent,
-  ExtensionDraggable,
-  ExtensionColumns,
-  ExtensionColumn,
-  ExtensionNodeSelected,
-  ExtensionTrailingNode,
-} from "@halo-dev/richtext-editor";
+} from "../../packages/editor/dist/rich-text-editor.es.js";
 
 const content = useLocalStorage("content", "");
 
@@ -100,9 +98,6 @@ const editor = useEditor({
     ExtensionVideo,
     ExtensionAudio,
     ExtensionCommands,
-    ExtensionCodeBlock.configure({
-      lowlight,
-    }),
     ExtensionIframe,
     ExtensionColor,
     ExtensionFontSize,

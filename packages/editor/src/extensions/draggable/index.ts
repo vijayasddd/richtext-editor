@@ -1,20 +1,18 @@
-import { Editor, Extension } from "@/tiptap/vue-3";
+import type { EditorView } from "@/tiptap/pm";
 import {
-  Fragment,
-  Node,
-  NodeType,
-  ResolvedPos,
-  Slice,
-  NodeSelection,
-  Plugin,
-  PluginKey,
   Decoration,
   DecorationSet,
-  // @ts-ignore
-  __serializeForClipboard as serializeForClipboard,
+  DOMSerializer,
+  Fragment,
+  Node,
+  NodeSelection,
+  NodeType,
+  Plugin,
+  PluginKey,
+  ResolvedPos,
+  Slice,
 } from "@/tiptap/pm";
-import {} from "@/tiptap";
-import type { EditorView } from "@/tiptap/pm";
+import { Editor, Extension } from "@/tiptap/vue-3";
 import type { DraggableItem, ExtensionOptions } from "@/types";
 
 // https://developer.mozilla.org/zh-CN/docs/Web/API/HTML_Drag_and_Drop_API
@@ -157,9 +155,19 @@ const handleDragStartEvent = (event: DragEvent) => {
     const slice = activeSelection.content();
     event.dataTransfer.effectAllowed = "move";
 
-    const { dom, text } = serializeForClipboard(currEditorView, slice);
+    const serializer = DOMSerializer.fromSchema(currEditorView.state.schema);
+    const fragment = serializer.serializeFragment(slice.content);
+    const tempDiv = document.createElement("div");
+    tempDiv.appendChild(fragment);
+    const html = tempDiv.innerHTML;
+
+    let text = "";
+    slice.content.forEach((node) => {
+      text += node.textContent;
+    });
+
     event.dataTransfer.clearData();
-    event.dataTransfer.setData("text/html", dom.innerHTML);
+    event.dataTransfer.setData("text/html", html);
     event.dataTransfer.setData("text/plain", text);
     event.dataTransfer.setDragImage(activeNode?.el as any, 0, 0);
 
@@ -373,8 +381,8 @@ const dropPoint = (doc: Node, pos: number, slice: Slice) => {
         dep == $pos.depth
           ? 0
           : $pos.pos <= ($pos.start(dep + 1) + $pos.end(dep + 1)) / 2
-          ? -1
-          : 1;
+            ? -1
+            : 1;
       const insertPos = $pos.index(dep) + (bias > 0 ? 1 : 0);
       const parent = $pos.node(dep);
       let fits = false;
@@ -393,8 +401,8 @@ const dropPoint = (doc: Node, pos: number, slice: Slice) => {
         return bias == 0
           ? $pos.pos
           : bias < 0
-          ? $pos.before(dep + 1)
-          : $pos.after(dep + 1);
+            ? $pos.before(dep + 1)
+            : $pos.after(dep + 1);
       }
     }
   }
